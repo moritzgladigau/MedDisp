@@ -27,17 +27,26 @@ char Data[10];                          //n first undefine values named "Data(0)
 int i;                                  //integer to count Data(n) n=i
 char customKey;                         //value that holds the last presed Key ->Defind later 
 
+//************************************************
 void setup() {
+  Serial.begin(9600);                   //communication between Arduino & Pc
   //LCD_Display
   lcd_1.begin(16, 2);                   //Truns on the Display and defines width & height
   lcd_1.setCursor(0,0);                 //Set the Curser -> top Left corner
   lcd_1.print("hello world");           //Writes "hello world"
   lcd_1.cursor();                       //Turns on the Curser = Curser visible 
   lcd_1.blink();                        //Lets the curser blink
-  
 }
 
+//************************************************
 void loop() {
-  // put your main code here, to run repeatedly:
+  customKey = customKeypad.getKey();    //variable "customKey" gets value of the last presed Key 
+                                        //if no Key get presed the funktion .getKey() gives the value "NO_KEY"
+  if(customKey != NO_KEY){              //Chek if an Key was presed
+    Key();                              //calls the funktion Key() from down below
+    Serial.print("i=");                 //writes on the Serial monitor...
+    Serial.println(i);
+    Serial.println(Data);
+  }
 
 }
