@@ -14,7 +14,7 @@ void setup() {
   lcd_1.print("hello world");           //Writes "hello world"
   lcd_1.cursor();                       //Turns on the Curser = Curser visible 
   lcd_1.blink();                        //Lets the curser blink
-  //Hi
+  
 }
 
 void loop() {
