@@ -50,3 +50,56 @@ void loop() {
   }
 
 }
+//************************************************
+//Key funktion -> 0-9 Keys Write & C Key Clear all & D Key delete last writen
+void Key(){
+  switch(customKey){
+    //Keys 0-9
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case '0':
+    {                                   //What hapens if one of the Keys above is Presed 
+      lcd_1.print(customKey);           //Print last presd key on the LCD Display
+      Data[i]=customKey;                //saves to last presd key to Data[0],...,Data[n]
+      i++;                              //increase the value i by 1
+    }
+    break;
+    //Key C shoud clear the Display & Data
+    case 'C':{
+      lcd_1.clear();                    //Clears the Display
+      i=0;                              //set i=0 so we can overwrite all the saved values in Data
+    }
+    break;
+    //Key D delete the last writen value in Data
+    case 'D':{
+      int a=i-1;                        //condition -> We ned all values exept of the last one 
+      int x=0;                          //value to write Data in right order
+      //Simpel Serial Monitor Control of the first 3 values in Data
+      Serial.print("Data.1=");
+      Serial.println(Data[0]);
+      Serial.print("Data.2=");
+      Serial.println(Data[1]);
+      Serial.print("Data.3=");
+      Serial.println(Data[2]);
+
+      lcd_1.home();                     //set the curser in the top left corner
+      //lcd_1.setCurser(0,0);           //set the curser at an position you like 
+      if(i>0){                          //controles that the Data save dosent fall under the value 0 (can't delet smth that dosen't exsist)
+        while(x<a){                     //repeat until described condition from above is true
+          lcd_1.print(Data[x]);         //rewrite all Data 
+          x++;
+        }
+        i--;                            //is used to overwrite the last savet value -> the value we want to delet
+      }
+    }
+    break;
+  }
+}
+
