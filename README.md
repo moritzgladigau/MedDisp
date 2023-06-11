@@ -18,7 +18,7 @@ In summary, the MedDisp is a solution that tackles the challenges of medication 
 It provides a reliable and user-friendly approach, bringing ease, confidence, and peace of mind to individuals who struggle with regular medication intake.
 Its aim is to help people lead healthier and more fulfilling lives.
 
-## What we can do so far (2023-06-11) ;)
+### What do we want to be able to do?! (>.<)
 - [x] Say "Hello World" on an LCD 16x2 display
 
 - [x] Write Numbers from 0-9 on the display using a Keypad
@@ -28,13 +28,14 @@ Its aim is to help people lead healthier and more fulfilling lives.
 
 - [x] If you make a mistake you can delete your entry with the 'D' key
 
-### What do we want to be able to do?! (>.<)
 - [ ] Using an RTC to track the Time
 
 - [ ] U should pick your own time when u want to get your medicals _up to 4 times a day_
 
 - [ ] And of course the Hardware will look amazing [•.-]
 
-**Look by [Here](https://github.com/moritzgladigau/MedDisp)**:+1:
+## What we can do so far look [here](https://github.com/moritzgladigau/MedDisp/releases) ;)
+
+**[Look by](https://github.com/moritzgladigau/MedDisp)**:+1:
 
 
