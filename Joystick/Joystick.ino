@@ -4,9 +4,6 @@
  */
 #include <ezButton.h>
 #include <LiquidCrystal.h>
-//#include <DS3231.h>
-//#include <Wire.h>
-
 
 #define VRX_PIN  A0 // Arduino pin connected to VRX pin
 #define VRY_PIN  A1 // Arduino pin connected to VRY pin
