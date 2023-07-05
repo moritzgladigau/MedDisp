@@ -5,12 +5,12 @@
 #include <ezButton.h>
 #include <LiquidCrystal.h>
 
+
 #define VRX_PIN  A0 // Arduino pin connected to VRX pin
 #define VRY_PIN  A1 // Arduino pin connected to VRY pin
 #define SW_PIN   7  // Arduino pin connected to SW  pin
 
 ezButton button(SW_PIN);
-
 
 int xValue = 0; // To store value of the X axis
 int yValue = 0; // To store value of the Y axis
@@ -35,13 +35,8 @@ byte heart[8] = {
 	0b00000
 };
 
-// String Text1="Hallo und ";
-// String Text2=" Wilkommen im Menu ihres ";
-// String Text3="im Menue ihres eigenen MedDisp.";
-
 void setup() {
-  //Serial.begin(9600) ;
-  Serial.begin(57600);
+  Serial.begin(57600); // Start the serial interface
 
   lcd.begin(16, 2);
   button.setDebounceTime(50); // set debounce time to 50 milliseconds
@@ -83,7 +78,7 @@ void loop() {
    // Read the button value
   bValue = button.getState();
   
-//Starte Den MedDisp nach der Begrüsung 
+  //Starte Den MedDisp nach der Begrüsung 
   if(StartButtonAbfrage==0){
     while(digitalRead(7) != LOW);{
       Serial.println(bValue);
@@ -137,4 +132,6 @@ void UpDownControle(){
     delay(200);
   }
 }
+
+
 
