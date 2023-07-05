@@ -33,7 +33,7 @@ void setup() {
   //LCD_Display
   lcd_1.begin(16, 2);                   //Truns on the Display and defines width & height
   lcd_1.setCursor(0,0);                 //Set the Curser -> top Left corner
-  lcd_1.print("hello world");           //Writes "hello world"
+  lcd_1.print("Hello World");           //Writes "hello world"
   lcd_1.cursor();                       //Turns on the Curser = Curser visible 
   lcd_1.blink();                        //Lets the curser blink
 }
