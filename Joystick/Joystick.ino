@@ -35,6 +35,16 @@ byte heart[8] = {
 	0b00000
 };
 
+String MenuItems[] = {  // Your menü items
+  "LED Switch",
+  "LED Brightness",
+  "menuitem 3",
+  "menuitem 4",
+  "menuitem 5",
+  "menuitem 6" 
+  // and so on... 
+};
+
 void setup() {
   Serial.begin(57600); // Start the serial interface
 
