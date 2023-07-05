@@ -45,6 +45,76 @@ String MenuItems[] = {  // Your menü items
   // and so on... 
 };
 
+void menuFunctions(int menu, byte right, byte left)  // Your menü functions
+{
+  if(menu == 1) // example function for 1. menü item
+  {
+    if(right == 1)
+    {
+      lcd.setCursor(0, 1);
+      lcd.print("Off   ");
+      lcd.setCursor(10, 1);
+      lcd.print("On  <<");
+      digitalWrite(ledPin, HIGH);
+    }
+    if(left == 1)
+    {
+      lcd.setCursor(0, 1);
+      lcd.print("Off <<");
+      lcd.setCursor(10, 1);
+      lcd.print("On    ");
+      digitalWrite(ledPin, LOW);
+    }
+  }
+  if(menu == 2) // example function for 2. menü item
+  {
+    if(right == 1)
+    {
+      fade += 20;
+      if(fade >= 255)
+      {
+        fade = 255;
+      }
+    }
+    if(left == 1)
+    {
+      fade -= 20;
+      if(fade <= 0)
+      {
+        fade = 0;
+      }
+    }
+    lcd.setCursor(0, 1);
+    lcd.print("Brightness:     ");
+    lcd.setCursor(12, 1);
+    lcd.print(fade);
+    analogWrite(ledPin_fade, fade);
+  }
+  if(menu == 3)
+  {
+    lcd.setCursor(0, 1);
+    lcd.print("Hello Menu Item 3");
+  }
+  // and so on... 
+}
+
+/***  do not modify  ***********************************************/
+  template< typename T, size_t NumberOfSize > 
+  size_t MenuItemsSize(T (&) [NumberOfSize]){ return NumberOfSize; }
+  int numberOfMenuItems = MenuItemsSize(MenuItems) - 1;
+  int currentMenuItem = 0;
+  int previousMenuItem = 1;
+  byte button_flag = 0;
+  unsigned long previousMillis = millis();
+  const int note = 4699;
+  void beepsOnce()
+  {
+    tone(tweeterPin, note, 125);
+    delay(60);
+    noTone(tweeterPin);
+  }
+/*******************************************************************/
+
 void setup() {
   Serial.begin(57600); // Start the serial interface
 
