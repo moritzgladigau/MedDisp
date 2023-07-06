@@ -27,6 +27,7 @@ Its aim is to help people lead healthier and more fulfilling lives.
 - [x] Clear the display & memory using the 'C' key
 
 - [x] If you make a mistake you can delete your entry with the 'D' key
+- [x] introduce an interactive menu
 
 - [ ] Using an RTC to track the Time
 
