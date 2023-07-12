@@ -72,9 +72,9 @@
  unsigned long previousMillis = millis();
 //Setup
   void setup(){
-    Serial.begin(57600);
+    Serial.begin(57600); // comunication between PC and Arduino
     lcd.begin(16,2);
-    button.setDebounceTime(50);
+    button.setDebounceTime(50); // Set debounce time to 50ms for button to prevent unintended multiple inputs caused by mechanical contacts
     StartMail();
     delay(5000);
     lcd.clear();
@@ -82,7 +82,7 @@
 //Loop
   void loop(){
     // Button initialize
-      button.loop(); // MUST call the loop() function first
+      button.loop(); // // Update button status
       
       xValue = analogRead(VRX_PIN); // read analog X analog values
       yValue = analogRead(VRY_PIN); // read analog Y analog values
