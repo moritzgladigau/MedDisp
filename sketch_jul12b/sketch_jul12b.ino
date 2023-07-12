@@ -17,8 +17,19 @@
   int yValue = 0; // To store value of the Y axis
   int bValue = 0; // To store value of the button
 
-  int StartButtonAbfrage=0;
-
+  int SetNumber=1; // helper value to display numbers 0-9
+//Text Icons
+  // Hertz <3
+    byte heart[8] = {
+    0b00000,
+    0b00000,
+    0b01010,
+    0b10101,
+    0b10001,
+    0b01010,
+    0b00100,
+    0b00000
+    };
 //Menu einweisung
   String MenuItems[] = {  // Your menu items 
     "meueitem 1",
@@ -32,18 +43,18 @@
     if(right == 1)
     {
       lcd.clear();
-      lcd.setCursor(0, 3);
-      lcd.print("Off   ");
-      lcd.setCursor(10, 3);
-      lcd.print("On  <<");
+      lcd.setCursor(0, 1);
+      lcd.print("Off <<");
+      lcd.setCursor(10, 1);
+      lcd.print("On    ");
     }
     if(left == 1)
     {
       lcd.clear();
-      lcd.setCursor(0, 3);
-      lcd.print("Off <<");
-      lcd.setCursor(10, 3);
-      lcd.print("On    ");
+      lcd.setCursor(0, 1);
+      lcd.print("Off   ");
+      lcd.setCursor(10, 1);
+      lcd.print("On  <<");
     }
   }
   if(menu == 2){ // example function for 2. menu item
@@ -63,11 +74,10 @@
   void setup(){
     Serial.begin(57600);
     lcd.begin(16,2);
-    //button.setDebounceTime(50);
-    lcd.setCursor(2, 0);
-     lcd.print("Hi");
-     delay(500);
-     lcd.clear();
+    button.setDebounceTime(50);
+    StartMail();
+    delay(5000);
+    lcd.clear();
    }
 //Loop
   void loop(){
@@ -120,4 +130,35 @@
         previousMillis = millis();
         button_flag = 0;
       }
+    //Test
+      // lcd.setCursor(0,0);
+      // lcd.print("Stat Wert:");
+      // lcd.print(SetNumber);
+      // NumberCounter();
+      // lcd.setCursor(0,1);
+      // lcd.print("Eigentlicher Wert:");
+      // lcd.print(SetNumber);
+
   }
+  
+// Start Mail
+  void StartMail(){
+    lcd.createChar(0, heart);   // create a new character
+    lcd.setCursor(0, 0);
+    lcd.setCursor(3,0);
+    lcd.write(byte(0)); // when calling lcd.write() '0' must be cast as a byte
+    lcd.print("MedDisp");
+    lcd.write(byte(0)); // when calling lcd.write() '0' must be cast as a byte
+  }
+//Value on display numbers 0-9 Count
+  // is used in the menuFunctions()
+  // todo: Not used jet
+  void NumberCounter(){
+    if(xValue>900 && SetNumber <=9){
+      SetNumber=SetNumber+1;
+      delay(200);
+    }else if(xValue<50 && SetNumber >=0){
+      SetNumber=SetNumber-1;
+      delay(200);
+    }
+  } 
