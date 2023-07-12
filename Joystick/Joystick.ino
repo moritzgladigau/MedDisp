@@ -55,7 +55,7 @@ void menuFunctions(int menu, byte right, byte left)  // Your menü functions
       lcd.print("Off   ");
       lcd.setCursor(10, 1);
       lcd.print("On  <<");
-      digitalWrite(ledPin, HIGH);
+      //digitalWrite(ledPin, HIGH);
     }
     if(left == 1)
     {
@@ -63,32 +63,16 @@ void menuFunctions(int menu, byte right, byte left)  // Your menü functions
       lcd.print("Off <<");
       lcd.setCursor(10, 1);
       lcd.print("On    ");
-      digitalWrite(ledPin, LOW);
+      //digitalWrite(ledPin, LOW);
     }
   }
   if(menu == 2) // example function for 2. menü item
   {
-    if(right == 1)
-    {
-      fade += 20;
-      if(fade >= 255)
-      {
-        fade = 255;
-      }
-    }
-    if(left == 1)
-    {
-      fade -= 20;
-      if(fade <= 0)
-      {
-        fade = 0;
-      }
-    }
     lcd.setCursor(0, 1);
     lcd.print("Brightness:     ");
     lcd.setCursor(12, 1);
-    lcd.print(fade);
-    analogWrite(ledPin_fade, fade);
+    //lcd.print(fade);
+    //analogWrite(ledPin_fade, fade);
   }
   if(menu == 3)
   {
@@ -106,13 +90,7 @@ void menuFunctions(int menu, byte right, byte left)  // Your menü functions
   int previousMenuItem = 1;
   byte button_flag = 0;
   unsigned long previousMillis = millis();
-  const int note = 4699;
-  void beepsOnce()
-  {
-    tone(tweeterPin, note, 125);
-    delay(60);
-    noTone(tweeterPin);
-  }
+  
 /*******************************************************************/
 
 void setup() {
