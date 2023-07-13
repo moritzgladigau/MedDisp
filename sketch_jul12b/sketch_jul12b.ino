@@ -92,7 +92,7 @@
       
       if(WorkOnlyOnce == 0){
         //Control Suport Serial Monitor
-          Serial.println("If WorkOnlyOce: 0 -> Whait to press the JoyStick");
+          Serial.println("If WorkOnlyOnce: 0 -> Wait to press the JoyStick");
           Serial.println("            or: 1 -> The button was pressed code wont work again");
           Serial.print("WorkOnlyOnce:");
           Serial.println(WorkOnlyOnce);
