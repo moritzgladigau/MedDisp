@@ -78,7 +78,7 @@
     button.setDebounceTime(50); // Set debounce time to 50ms for button to prevent unintended multiple inputs caused by mechanical contacts
     StartMail();
     delay(5000);
-    lcd.clear();
+    //lcd.clear();
    }
 //Loop
   void loop(){
@@ -165,16 +165,16 @@
       lcd.print("Start");
       // fake loading process
         for(int Laden=0;Laden<=100; Laden++){
-        lcd.setCursor(15, 1);
-        lcd.print("%");
-        if(Laden<10){
-          lcd.setCursor(14, 1);
-        }else if(Laden<100){
-          lcd.setCursor(13, 1);
+          lcd.setCursor(15, 1);
+          lcd.print("%");
+          if(Laden<10){
+            lcd.setCursor(14, 1);
+          }else if(Laden<100){
+            lcd.setCursor(13, 1);
+          }
+          lcd.print(Laden);
+          delay(80);
         }
-        lcd.print(Laden);
-        delay(80);
-    }
     lcd.clear();
     }
 //Value on display numbers 0-9 Count
