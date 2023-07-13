@@ -15,7 +15,7 @@
 
   int xValue = 0; // To store value of the X axis
   int yValue = 0; // To store value of the Y axis
-  int bValue = 0; // To store value of the button
+  //int bValue = 0; // To store value of the button
 
   int SetNumber=1; // helper value to display numbers 0-9
 //Text Icons
@@ -86,7 +86,7 @@
       
       xValue = analogRead(VRX_PIN); // read analog X analog values
       yValue = analogRead(VRY_PIN); // read analog Y analog values
-      bValue = button.getState(); // Read the button value
+      //bValue = button.getState(); // Read the button value
     // Joystick movement 
       if(xValue>900 && button_flag == 0){
         menuFunctions(currentMenuItem + 1, 1, 0);
