@@ -18,6 +18,7 @@
   //int bValue = 0; // To store value of the button
 
   int SetNumber=1; // helper value to display numbers 0-9
+  int WorkOnlyOnce = 0; // Whait for press button OnlyOnce at the Start
 //Text Icons
   // Hertz <3
     byte heart[8] = {
@@ -87,6 +88,22 @@
       xValue = analogRead(VRX_PIN); // read analog X analog values
       yValue = analogRead(VRY_PIN); // read analog Y analog values
       //bValue = button.getState(); // Read the button value
+    // StartButton to continue
+      
+      if(WorkOnlyOnce == 0){
+        //Control Suport Serial Monitor
+          Serial.println("If WorkOnlyOce: 0 -> Whait to press the JoyStick");
+          Serial.println("            or: 1 -> The button was pressed code wont work again");
+          Serial.print("WorkOnlyOnce:");
+          Serial.println(WorkOnlyOnce);
+        while(digitalRead(7) != LOW);{
+          StartButton();
+          WorkOnlyOnce =1;
+          //Control Suport Serial Monitor
+            Serial.print("WorkOnlyOnce:");
+            Serial.print(WorkOnlyOnce);
+        }
+      }
     // Joystick movement 
       if(xValue>900 && button_flag == 0){
         menuFunctions(currentMenuItem + 1, 1, 0);
@@ -130,14 +147,6 @@
         previousMillis = millis();
         button_flag = 0;
       }
-    //Test
-      // lcd.setCursor(0,0);
-      // lcd.print("Stat Wert:");
-      // lcd.print(SetNumber);
-      // NumberCounter();
-      // lcd.setCursor(0,1);
-      // lcd.print("Eigentlicher Wert:");
-      // lcd.print(SetNumber);
 
   }
   
@@ -150,6 +159,24 @@
     lcd.print("MedDisp");
     lcd.write(byte(0)); // when calling lcd.write() '0' must be cast as a byte
   }
+ // Press buton to continue
+    void StartButton(){
+      lcd.setCursor(6,1);
+      lcd.print("Start");
+      // fake loading process
+        for(int Laden=0;Laden<=100; Laden++){
+        lcd.setCursor(15, 1);
+        lcd.print("%");
+        if(Laden<10){
+          lcd.setCursor(14, 1);
+        }else if(Laden<100){
+          lcd.setCursor(13, 1);
+        }
+        lcd.print(Laden);
+        delay(80);
+    }
+    lcd.clear();
+    }
 //Value on display numbers 0-9 Count
   // is used in the menuFunctions()
   // todo: Not used jet
