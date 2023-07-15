@@ -19,20 +19,10 @@ It provides a reliable and user-friendly approach, bringing ease, confidence, an
 Its aim is to help people lead healthier and more fulfilling lives.
 
 ### What do we want to be able to do?! (>.<)
-- [x] Say "Hello World" on an LCD 16x2 display
-
-- [x] Write Numbers from 0-9 on the display using a Keypad
-  -> and save them in a kind of fast memory	
-  
-- [x] Clear the display & memory using the 'C' key
-
-- [x] If you make a mistake you can delete your entry with the 'D' key
+- [x] start sequence (greeting/program start after pressing the joystick)
 - [x] introduce an interactive menu
-
 - [ ] Using an RTC to track the Time
-
 - [ ] U should pick your own time when u want to get your medicals _up to 4 times a day_
-
 - [ ] And of course the Hardware will look amazing [•.-]
 
 ## What we can do so far look [here](https://github.com/moritzgladigau/MedDisp/releases) ;)
