@@ -8,6 +8,11 @@
   #include <Servo.h>
 
   Servo myservo;  // create servo object to control a servo
+//RTC einfuegen 
+  #include <Wire.h>
+  #include <RTClib.h>
+
+  RTC_DS1307 rtc;
 const int buttonPinL = 6; 
 const int buttonPinR = 7; 
 const int buttonPinU = 9; 
@@ -88,6 +93,9 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
   void setup(){
     Serial.begin(57600); // comunication between PC and Arduino
     lcd.begin(16,2);
+    //RTC 
+      Wire.begin(); 
+      rtc.begin();
    // button.setDebounceTime(50); // Set debounce time to 50ms for button to prevent unintended multiple inputs caused by mechanical contacts
     StartMail();
     //delay(5000);
@@ -96,6 +104,9 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
    }
 //Loop
   void loop(){
+    DateTime now = rtc.now(); 
+    //Docu fehlt int Datum ... in 0-9 couter und dann mit rtc.adjust(DateTime(year, month, day, hour, minute, second)); deff
+    // https://chat.openai.com/?model=text-davinci-002-render-sha 
     ServoLoop();
     buttonStateL = digitalRead(buttonPinL);
     buttonStateR = digitalRead(buttonPinR);
