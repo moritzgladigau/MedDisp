@@ -45,7 +45,8 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
 //Menu einweisung
   String MenuItems[] = {  // Your menu items 
     "meueitem 1",
-    "meueitem 2"
+    "meueitem 2",
+    "Data & Time"
     // and so on...
   };
 //menu Function
@@ -77,6 +78,14 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
       if(Down == 1){NumberCounterNew(0, 1);}
       lcd.print(SetNumber);
     }
+  }
+  if(menu == 3){
+    int year = 2023;
+    int month = 1;
+    int day = now.day(); // Der Tag bleibt unverändert
+    int hour = 0;
+    int minute = 0;
+    int second = now.second(); // Die Sekunde bleibt unverändert
   }
    // and so on... 
  }
