@@ -74,18 +74,24 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
     if(ButtonIsPressedGoinAndOut == 1){
       lcd.setCursor(0, 1);
       lcd.print("Counter: ");
-      if(Up == 1){NumberCounterNew(1, 0);}
-      if(Down == 1){NumberCounterNew(0, 1);}
+      if(Up == 1){NumberCounterNew(1, 0, 8, 1);}
+      if(Down == 1){NumberCounterNew(0, 1, 8, 1);}
       lcd.print(SetNumber);
     }
   }
   if(menu == 3){
-    int year = 2023;
-    int month = 1;
-    int day = now.day(); // Der Tag bleibt unverändert
-    int hour = 0;
-    int minute = 0;
-    int second = now.second(); // Die Sekunde bleibt unverändert
+    if(ButtonIsPressedGoinAndOut == 1){
+      DateTime now = rtc.now();
+      // Joystick up
+      int year = NumberCounterNew(1, 0, 2099, 2023); //2023 - 2099
+      int month = 1; // 1 - 12
+      int day = 0; // 1 - 31
+      int hour = 0; // 0 - 23
+      int minute = 0; // 0 - 59
+      int second = now.second(); // Die Sekunde bleibt unverändert
+
+      rtc.adjust(DateTime(year, month, day, hour, minute, second));
+    }
   }
    // and so on... 
  }
@@ -113,7 +119,7 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
    }
 //Loop
   void loop(){
-    DateTime now = rtc.now(); 
+    //DateTime now = rtc.now(); 
     //Docu fehlt int Datum ... in 0-9 couter und dann mit rtc.adjust(DateTime(year, month, day, hour, minute, second)); deff
     // https://chat.openai.com/?model=text-davinci-002-render-sha 
     ServoLoop();
@@ -155,11 +161,11 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
       
       if(ButtonIsPressedGoinAndOut == 1){
         if(buttonStateL == HIGH && button_flag == 0){
-          menuFunctions(currentMenuItem + 1, 1, 0, 0, 0);
+          menuFunctions(currentMenuItem + 1, 1, 0, 0, 0); 
           button_flag = 1;
           previousMillis = millis();
         }else if(buttonStateR == HIGH && button_flag == 0){
-          menuFunctions(currentMenuItem + 1, 0, 1, 0, 0);
+          menuFunctions(currentMenuItem + 1, 0, 1, 0, 0); 
           button_flag = 1;
           previousMillis = millis();
         }else{menuFunctions(currentMenuItem + 1, 0, 0, 0, 0);}
@@ -187,12 +193,12 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
         }
       }else{
         if(buttonStateU == HIGH && button_flag == 0){
-          menuFunctions(currentMenuItem + 1, 0, 0, 1, 0);
+          menuFunctions(currentMenuItem + 1, 0, 0, 1, 0); //up
           button_flag = 1;
           previousMillis = millis();
         }
         if(buttonStateD == HIGH && button_flag == 0){
-          menuFunctions(currentMenuItem + 1, 0, 0, 0, 1);
+          menuFunctions(currentMenuItem + 1, 0, 0, 0, 1); //down
           button_flag = 1;
           previousMillis = millis();
         }
@@ -252,11 +258,11 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
     lcd.clear();
     }
 //Value on display numbers 0-9 Count
-  void NumberCounterNew(byte Up, byte Down){
-    if(Up == 1 && SetNumber <=8){
+  void NumberCounterNew(byte Up, byte Down, byte Max, byte Min){
+    if(Up == 1 && SetNumber <= Max){
       SetNumber=SetNumber+1;
     }
-    if(Down == 1 && SetNumber >=1){
+    if(Down == 1 && SetNumber >= Min){
       SetNumber=SetNumber-1;
     }
   }
