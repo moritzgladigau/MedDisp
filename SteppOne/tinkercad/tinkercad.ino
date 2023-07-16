@@ -83,13 +83,14 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
     if(ButtonIsPressedGoinAndOut == 1){
       DateTime now = rtc.now();
       // Joystick up
-      int year = NumberCounterNew(1, 0, 2099, 2023); //2023 - 2099
+      NumberCounterNew(1, 0, 2099, 2022);
+      int year = SetNumber; //2023 - 2099
       int month = 1; // 1 - 12
       int day = 0; // 1 - 31
       int hour = 0; // 0 - 23
       int minute = 0; // 0 - 59
       int second = now.second(); // Die Sekunde bleibt unverändert
-
+      return 0;
       rtc.adjust(DateTime(year, month, day, hour, minute, second));
     }
   }
@@ -265,6 +266,7 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
     if(Down == 1 && SetNumber >= Min){
       SetNumber=SetNumber-1;
     }
+    return;
   }
 //Servo Loop
   void ServoLoop(){
