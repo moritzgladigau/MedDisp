@@ -4,6 +4,10 @@
  const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
  LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
+//Servo einfuegen
+  #include <Servo.h>
+
+  Servo myservo;  // create servo object to control a servo
 const int buttonPinL = 6; 
 const int buttonPinR = 7; 
 const int buttonPinU = 9; 
@@ -19,6 +23,8 @@ int buttonStateS = 0;  // variable for reading the pushbutton status
 int SetNumber=1; // helper value to display numbers 0-9
 int WorkOnlyOnce = 0; // Whait for press button OnlyOnce at the Start
 int ButtonIsPressedGoinAndOut = 0; // Was the Joystick pressed the lassed time 
+int ServoPos = 0;    // variable to store the servo ServoPosition
+
 //Text Icons
   // Hertz <3
     byte heart[8] = {
@@ -86,10 +92,11 @@ int ButtonIsPressedGoinAndOut = 0; // Was the Joystick pressed the lassed time
     StartMail();
     //delay(5000);
     //lcd.clear();
+    myservo.attach(19);  // attaches the servo on pin 9 to the servo object
    }
 //Loop
   void loop(){
-    
+    ServoLoop();
     buttonStateL = digitalRead(buttonPinL);
     buttonStateR = digitalRead(buttonPinR);
     buttonStateU = digitalRead(buttonPinU);
@@ -220,23 +227,11 @@ int ButtonIsPressedGoinAndOut = 0; // Was the Joystick pressed the lassed time
             lcd.setCursor(13, 1);
           }
           lcd.print(Laden);
-          delay(80);
+          delay(80); 
         }
     lcd.clear();
     }
 //Value on display numbers 0-9 Count
-  // is used in the menuFunctions()
-  // todo: Not used jet
-  void NumberCounter(){
-    if(buttonStateD == HIGH && SetNumber <=8){
-      SetNumber=SetNumber+1;
-      //delay(200);
-    }else if(buttonStateU == HIGH && SetNumber >=1){
-      SetNumber=SetNumber-1;
-      //delay(200);
-    }
-  }
-
   void NumberCounterNew(byte Up, byte Down){
     if(Up == 1 && SetNumber <=8){
       SetNumber=SetNumber+1;
@@ -244,4 +239,16 @@ int ButtonIsPressedGoinAndOut = 0; // Was the Joystick pressed the lassed time
     if(Down == 1 && SetNumber >=1){
       SetNumber=SetNumber-1;
     }
+  }
+//Servo Loop
+  void ServoLoop(){
+    for (ServoPos = 0; ServoPos <= 180; ServoPos += 1) { // goes from 0 degrees to 180 degrees
+	    // in steps of 1 degree
+	    myservo.write(ServoPos);              // tell servo to go to ServoPosition in variable 'ServoPos'
+	    delay(15);                       // waits 15ms for the servo to reach the ServoPosition
+	  }
+	  for (ServoPos = 180; ServoPos >= 0; ServoPos -= 1) { // goes from 180 degrees to 0 degrees
+	    myservo.write(ServoPos);              // tell servo to go to ServoPosition in variable 'ServoPos'
+	    delay(15);                       // waits 15ms for the servo to reach the ServoPosition
+	  }
   }
