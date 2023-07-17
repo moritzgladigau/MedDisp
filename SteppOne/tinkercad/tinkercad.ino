@@ -13,6 +13,7 @@
   #include <RTClib.h>
 
   RTC_DS1307 rtc;
+  DateTime now = rtc.now(); 
 const int buttonPinL = 6; 
 const int buttonPinR = 7; 
 const int buttonPinU = 9; 
@@ -81,17 +82,36 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
   }
   if(menu == 3){
     if(ButtonIsPressedGoinAndOut == 1){
-      DateTime now = rtc.now();
-      // Joystick up
-      NumberCounterNew(1, 0, 2099, 2022);
-      int year = SetNumber; //2023 - 2099
+      int year = 2023; ////2023 - 2099
       int month = 1; // 1 - 12
       int day = 0; // 1 - 31
       int hour = 0; // 0 - 23
       int minute = 0; // 0 - 59
       int second = now.second(); // Die Sekunde bleibt unverändert
-      return 0;
+
+      int Next = 0;
+      if(right == 1){if(Next >= 0){Next++;}}
+      if(left == 1){if(Next <= 5){Next--;}}
+
+      if(Next == 0){
+        lcd.setCursor(0, 0);
+        lcd.print("Set: Date");
+        lcd.setCursor(0, 1);
+        lcd.print("Year:");
+        NumberCounterNew(1, 0, 2099, 2022);
+        year = SetNumber;
+        lcd.print(year);
+      }
+      if(Next == 1){
+        NumberCounterNew(1, 0, 1, 12);
+        month = SetNumber; 
+      }
+      //DateTime now = rtc.now();
+      // Joystick up
+      
+      //return 0;
       rtc.adjust(DateTime(year, month, day, hour, minute, second));
+      TimeTabelDatum();
     }
   }
    // and so on... 
@@ -279,4 +299,23 @@ int ServoPos = 0;    // variable to store the servo ServoPosition
 	    myservo.write(ServoPos);              // tell servo to go to ServoPosition in variable 'ServoPos'
 	    delay(15);                       // waits 15ms for the servo to reach the ServoPosition
 	  }
+  }
+// Datum und Uhrzeit auf dem LCD-Display ausgeben
+  void TimeTabelDatum(){
+    //lcd.setCursor(0, 0);
+    lcd.print("Datum: ");
+    lcd.print(now.day(), DEC);
+    lcd.print('/');
+    lcd.print(now.month(), DEC);
+    lcd.print('/');
+    lcd.print(now.year(), DEC);
+  }
+  void TimeTabeUhrzeit(){
+    lcd.setCursor(0, 1);
+    lcd.print("Uhrzeit: ");
+    lcd.print(now.hour(), DEC);
+    lcd.print(':');
+    lcd.print(now.minute(), DEC);
+    lcd.print(':');
+    lcd.print(now.second(), DEC);
   }
