@@ -35,9 +35,11 @@ int Next = 0; // Switch "set date /time"
 int SetYear = 0;
 int SetMonth = 0;
 
-// int year = 2023; ////2023 - 2099
-// int month = 1; // 1 - 12
-// int day = 0; // 1 - 31
+int year = 2023; ////2023 - 2099
+int month = 1; // 1 - 12
+int day = 1; // 1 - 31
+int hour = 0; // 0 - 23
+int minute = 0; // 0 - 59
 
 //Text Icons
   // Herz <3
@@ -62,80 +64,85 @@ int SetMonth = 0;
  void menuFunctions(int menu, byte right, byte left, byte Up, byte Down){  // Your menu functions
   if(menu == 1){ // example function for 1. menu item
     if(ButtonIsPressedGoInAndOut == 1){
-      if(left == 1)
-      {
-        lcd.clear();
-        lcd.setCursor(0, 1);
-        lcd.print("Off <<");
-        lcd.setCursor(10, 1);
-        lcd.print("On    ");
-      }
-      if(right == 1)
-      {
-        lcd.clear();
-        lcd.setCursor(0, 1);
-        lcd.print("Off   ");
-        lcd.setCursor(10, 1);
-        lcd.print("On  <<");
-      }
+      lcd.setCursor(0, 0);
+      TimeTabelDatum();
+      TimeTabeUhrzeit();
+      //delay(1000);
     }
   }
   if(menu == 2){ // example function for 2. menu item
     if(ButtonIsPressedGoInAndOut == 1){
-      lcd.setCursor(0, 1);
-      lcd.print("Counter: ");
-      if(Up == 1){NumberCounterNew(0, 1, 8, 1);}
-      if(Down == 1){NumberCounterNew(1, 0, 8, 1);}
-      lcd.print(SetNumber);
+      // lcd.setCursor(0, 1);
+      // lcd.print("Counter: ");
+      // if(Up == 1){NumberCounterNew(0, 1, 8, 1);}
+      // if(Down == 1){NumberCounterNew(1, 0, 8, 1);}
+      // lcd.print(SetNumber);
     }
   }
   if(menu == 3){
     if(ButtonIsPressedGoInAndOut == 1){
       DateTime now = rtc.now(); 
-      int year = 2023; ////2023 - 2099
-      int month = 1; // 1 - 12
-      int day = 0; // 1 - 31
-      int hour = 0; // 0 - 23
-      int minute = 0; // 0 - 59
+      // int year = 2023; ////2023 - 2099
+      // int month = 1; // 1 - 12
+      // int day = 1; // 1 - 31
+      // int hour = 0; // 0 - 23
+      // int minute = 0; // 0 - 59
       int second = now.second(); // Die Sekunde bleibt unverändert
-      
-      if(right == 1){if(Next < 9){Next++;}lcd.clear();}
-      if(left == 1){if(Next > 0){Next--;}lcd.clear();}
-      // Serial.print("Next: ");
-      // Serial.println(Next);
+      //lcd.clear();
+      if(right == 1){if(Next < 5){Next++;}}
+      if(left == 1){if(Next > 0){Next--;}}
 
+      //lcd.setCursor(0, 0);
+      //lcd.print("Set Date:");
+      lcd.cursor();
       if(Next == 0){
-        // if(SetYear == 0){SetNumber = 2023; SetYear=1;}
-        lcd.setCursor(0, 0);
-        lcd.print("Set: Year");
- 
-        if(Down == 1){NumberCounterNew(1, 0, 2099, 2022);}
-        if(Up == 1){NumberCounterNew(0, 1, 2099, 2022);}
-        // year = SetNumber;
-        // lcd.print(year);
-        // if (Down == 1){year--;}
-        // if (Up == 1){year++;}
+        year = NumberCounterNew(Up, Down, 2099, 2022, year);
 
         lcd.setCursor(0, 1);
         lcd.print(year);
       }
-      if(Next == 1){
-        if(SetMonth == 0){SetNumber = 1; SetMonth=1;}
+      else if(Next == 1){
+        month = NumberCounterNew(Up, Down, 11, 2, month);
+
         lcd.setCursor(0, 1);
-         if(Down == 1){NumberCounterNew(1, 0, 11, 2);}
-        if(Up == 1){NumberCounterNew(0, 1, 11, 2);}
-        month = SetNumber;
         lcd.print(year);
         lcd.print("/");
         lcd.print(month);
-        //lcd.print("Next = 1");
+
       }
-      //DateTime now = rtc.now();
-      // Joystick up
-      
-      //return 0;
-      //rtc.adjust(DateTime(year, month, day, hour, minute, second));
-      //TimeTabelDatum();
+      else if(Next == 2){
+        day = NumberCounterNew(Up, Down, 30, 2, day);
+
+        lcd.setCursor(0, 1);
+        lcd.print(year);
+        lcd.print("/");
+        lcd.print(month);
+        lcd.print("/");
+        lcd.print(day);
+      }
+      else if(Next == 3){
+        hour = NumberCounterNew(Up, Down, 22, 1, hour);
+
+        lcd.setCursor(11, 1);
+        lcd.print(hour);
+      }
+      else if(Next == 4){
+        minute = NumberCounterNew(Up, Down, 58, 1, minute);
+
+        lcd.setCursor(11, 1);
+        lcd.print(hour);
+        lcd.print(":");
+        lcd.print(minute);
+      }
+      else if(Next == 5){
+        lcd.noCursor();
+        rtc.adjust(DateTime(year, month, day, hour, minute, second));
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Date & Time");
+        lcd.setCursor(0, 1);
+        lcd.print("All Set");
+      }
     }
   }
    // and so on... 
@@ -323,14 +330,14 @@ int SetMonth = 0;
     lcd.clear();
     }
 //Value on display numbers 0-9 Count
-  void NumberCounterNew(byte Up, byte Down, int Max, int Min){
-    if(Up == 1 && SetNumber <= Max){
-      SetNumber=SetNumber+1;
+  int NumberCounterNew(byte Up, byte Down, int Max, int Min, int Start){
+    if(Up == 1 && Start <= Max){
+      return Start+1;
     }
-    if(Down == 1 && SetNumber >= Min){
-      SetNumber=SetNumber-1;
+    if(Down == 1 && Start >= Min){
+      return Start-1;
     }
-    //return;
+    return Start;
   }
 //Servo Loop
   // void ServoLoop(){
@@ -345,21 +352,23 @@ int SetMonth = 0;
 	//   }
   // }
 // Datum und Uhrzeit auf dem LCD-Display ausgeben
-  // void TimeTabelDatum(){
-  //   //lcd.setCursor(0, 0);
-  //   lcd.print("Datum: ");
-  //   lcd.print(now.day(), DEC);
-  //   lcd.print('/');
-  //   lcd.print(now.month(), DEC);
-  //   lcd.print('/');
-  //   lcd.print(now.year(), DEC);
-  // }
-  // void TimeTabeUhrzeit(){
-  //   lcd.setCursor(0, 1);
-  //   lcd.print("Uhrzeit: ");
-  //   lcd.print(now.hour(), DEC);
-  //   lcd.print(':');
-  //   lcd.print(now.minute(), DEC);
-  //   lcd.print(':');
-  //   lcd.print(now.second(), DEC);
-  // }
+  void TimeTabelDatum(){
+    //lcd.setCursor(0, 0);
+    DateTime now = rtc.now();
+    lcd.print("Datum: ");
+    lcd.print(now.day(), DEC);
+    lcd.print('/');
+    lcd.print(now.month(), DEC);
+    lcd.print('/');
+    lcd.print(now.year(), DEC);
+  }
+  void TimeTabeUhrzeit(){
+    DateTime now = rtc.now();
+    lcd.setCursor(0, 1);
+    lcd.print("Uhrzeit: ");
+    lcd.print(now.hour(), DEC);
+    lcd.print(':');
+    lcd.print(now.minute(), DEC);
+    // lcd.print(':');
+    // lcd.print(now.second(), DEC);
+  }
