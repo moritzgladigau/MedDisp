@@ -1,3 +1,5 @@
+
+
 //LCD einfuehrung
  #include <LiquidCrystal.h>
 
@@ -20,7 +22,7 @@
   int yValue = 0; // To store value of the Y axis
 
 //RTC einfuegen 
-  #include <Wire.h>
+  #include <SoftWire.h>
   #include <RTClib.h>
 
   RTC_DS1307 rtc;
@@ -31,6 +33,8 @@ int WorkOnlyOnce = 0; // Whait for press button OnlyOnce at the Start
 int ButtonIsPressedGoInAndOut = 0; // Was the Joystick pressed the lassed time 
 int ServoPos = 0;    // variable to store the servo ServoPosition
 int Next = 0; // Switch "set date /time"
+int NextArlarm = 0;
+int NextStep = 0;
 
 int year = 2023; ////2023 - 2099
 int month = 1; // 1 - 12
@@ -39,27 +43,18 @@ int hour = 0; // 0 - 23
 int minute = 0; // 0 - 59
 int second = 0;
 
+int Numb = 1;
+
+
   //Wich timeslots are used
-int isSet1 = 1;
-int isSet2 = 0;
-int isSet3 = 0;
-int isSet4 = 0;
-  //Timeslot1
-    int SetHour1 = 22;
-    int SetMin1 = 22;
-    int SetSec1 = 0;
-  //Timeslot2
-    int SetHour2 = 0;
-    int SetMin2 = 0;
-    int SetSec2 = 0;
-  //Timeslot3
-    int SetHour3 = 0;
-    int SetMin3 = 0;
-    int SetSec3 = 0;
-  //Timeslot4
-    int SetHour4 = 0;
-    int SetMin4 = 0;
-    int SetSec4 = 0;
+int isSet[4] = {0, 0, 0, 0};
+// Timeslots: [Stunde, Minute, Sekunde]
+int timeslots[4][3] = {
+  {5, 27, 0}, // Timeslot1
+  {0, 0, 0},   // Timeslot2
+  {0, 0, 0},   // Timeslot3
+  {0, 0, 0}    // Timeslot4
+};
 
 //Text Icons
   // Herz <3
@@ -75,10 +70,11 @@ int isSet4 = 0;
     };
 //Menu einweisung
   String MenuItems[] = {  // Your menu items 
-    "Show Data & Time",
-    "meueitem 2",
-    "Set Data & Time",
-    "Loeschen"
+    "Show Date & Time",
+    "manual dispense",
+    "Set Date & Time",
+    "Clear all",
+    "Set Arlarm"
     // and so on...
   };
 //menu Function
@@ -92,24 +88,14 @@ int isSet4 = 0;
   }
   if(menu == 2){ // example function for 2. menu item
     if(ButtonIsPressedGoInAndOut == 1){
-      lcd.setCursor(0, 1);
-      lcd.print("Fore");
+      //RTCWire();
       ServoMove();
-      lcd.setCursor(0, 1);
-      lcd.print("after");
-      // if(Up == 1){NumberCounterNew(0, 1, 8, 1);}
-      // if(Down == 1){NumberCounterNew(1, 0, 8, 1);}
-      // lcd.print(SetNumber);
     }
   }
   if(menu == 3){
     if(ButtonIsPressedGoInAndOut == 1){
       DateTime now = rtc.now(); 
-      // int year = 2023; ////2023 - 2099
-      // int month = 1; // 1 - 12
-      // int day = 1; // 1 - 31
-      // int hour = 0; // 0 - 23
-      // int minute = 0; // 0 - 59
+
       int second = now.second(); // Die Sekunde bleibt unverändert
       //lcd.clear();
       if(right == 1){if(Next < 5){Next++;}}
@@ -167,13 +153,56 @@ int isSet4 = 0;
         lcd.print("All Set");
       }
     }
+    
   }
   if(menu == 4){
     if(ButtonIsPressedGoInAndOut == 1){
-      isSet1 = 0;
-      isSet2 = 0;
-      isSet3 = 0;
-      isSet4 = 0;
+      isSet[0] = 0;
+      isSet[1] = 0;
+      isSet[2] = 0;
+      isSet[3] = 0;
+    }
+  }
+  if(menu == 5){
+    
+    if(ButtonIsPressedGoInAndOut == 1){
+      
+      if(right == 1){if(NextArlarm < Numb){NextArlarm++;}}
+      if(left == 1){if(NextArlarm > 0){NextArlarm--;}}
+      
+      if(NextArlarm == 0){
+        lcd.setCursor(0, 1);
+        lcd.print("Timeslots: ");
+        Numb = NumberCounterNew(Up, Down, 3, 2, Numb);
+        lcd.print(Numb);
+        if(Numb >= 1){isSet[0]=1;}else{isSet[0]=0;}
+        //Serial.print("isSet 1:"); Serial.println(isSet[0]);
+        if(Numb >= 2){isSet[1]=1;}else{isSet[1]=0;}
+        //Serial.print("isSet 2:"); Serial.println(isSet[1]);
+        if(Numb >= 3){isSet[2]=1;}else{isSet[2]=0;}
+        //Serial.print("isSet 3:"); Serial.println(isSet[2]);
+        if(Numb >= 4){isSet[3]=1;}else{isSet[3]=0;}
+        //Serial.print("isSet 4:"); Serial.println(isSet[3]);
+      }
+      lcd.setCursor(0, 1);
+      if(NextArlarm == 1){
+          // if(right == 1){if(NextStep < 2){NextStep++;}}
+          // if(left == 1){if(NextStep > 0){NextStep--;}}
+          // Serial.print(NextStep);
+          // if(NextStep == 2){if(right == 1){if(NextArlarm < Numb){NextArlarm++;}}}
+          // if(NextStep == 0){timeslots[0][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[0][0]);} // Stunde auf 12 setzen}
+          // if(NextStep == 1){timeslots[0][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[0][1]);} // Minute auf 34 setzen}
+          timeslots[0][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[0][0]);
+          timeslots[0][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[0][1]);
+          timeslots[0][2] = 0;  // Sekunde auf 0 setzen (Start der Servo-Bewegung zu jeder vollen Minute)
+          lcd.print("Timeslot 1:");
+          lcd.print(timeslots[0][0]);
+          lcd.print(":");
+          lcd.print(timeslots[0][1]);
+      }
+      if(NextArlarm == 2){
+          lcd.print("Timeslot 2:");
+      }
     }
   }
    // and so on... 
@@ -193,17 +222,20 @@ int isSet4 = 0;
     Serial.begin(57600); // comunication between PC and Arduino
     lcd.begin(16,2);
     StartMail();
+    
+    myservo.attach(9);  // attaches the servo on pin 9 to the servo object
     //RTC 
-      Wire.begin(); 
+      Wire.begin();
       rtc.begin();
+      //Wire.endTransmission();
     button.setDebounceTime(50); // Set debounce time to 50ms for button to prevent unintended multiple inputs caused by mechanical contacts
-    myservo.attach(19);  // attaches the servo on pin 9 to the servo object
     Serial.print(button.getState());
    }
 //Loop
   void loop(){
-    button.loop();
-    
+    // button.loop();
+    //RTCWire();
+
     DateTime now = rtc.now(); 
 
     // Button initialize
@@ -302,19 +334,24 @@ int isSet4 = 0;
         previousMillis = millis();
         button_flag = 0;
       }
+      int RTCHour = now.hour();
+      int RTCMin = now.minute();
+      int RTCSec = now.second();
+      Serial.println(RTCMin);
+      Serial.println(timeslots[0][1]);
     //Servo
-      // if(now.hour() == SetHour1 && now.minute() == SetMin1 && now.second() == SetSec1 && isSet1 == 1){
-      //     ServoMove();
-      //   }
-      //   else if(now.hour() == SetHour2 && now.minute() == SetMin2 && now.second() == SetSec2 && isSet2 == 1){
-      //     ServoMove();
-      //   }
-      //   else if(now.hour() == SetHour3 && now.minute() == SetMin3 && now.second() == SetSec3 && isSet3 == 1){
-      //     ServoMove();
-      //   }
-      //   else if(now.hour() == SetHour4 && now.minute() == SetMin4 && now.second() == SetSec4 && isSet4 == 1){
-      //     ServoMove();
-      //   }
+      if(RTCHour == timeslots[0][0] && RTCMin == timeslots[0][1] && RTCSec == timeslots[0][2] && isSet[0] == 1){
+          ServoMove();
+        }
+        else if(RTCHour == timeslots[1][0] && RTCMin == timeslots[1][1] && RTCSec == timeslots[1][2] && isSet[1] == 1){
+          ServoMove();
+        }
+        else if(RTCHour == timeslots[2][0] && RTCMin == timeslots[2][1] && RTCSec == timeslots[2][2] && isSet[2] == 1){
+          ServoMove();
+        }
+        else if(RTCHour == timeslots[3][0] && RTCMin == timeslots[3][1] && RTCSec == timeslots[3][2] && isSet[3] == 1){
+          ServoMove();
+        }
   }
 
 //currentMeueItem
@@ -365,18 +402,18 @@ int isSet4 = 0;
   }
 //Servo Move
   void ServoMove(){
-    lcd.print("go");
-    for (ServoPos = 97; ServoPos >= 34; ServoPos -= 1) { // goes from 180 degrees to 0 degrees
-    myservo.write(ServoPos);              // tell servo to go to ServoPosition in variable 'ServoPos'
-    delay(5);                       // waits 15ms for the servo to reach the ServoPosition
-    }
-    lcd.print("further");
-    for (ServoPos = 34; ServoPos <= 97; ServoPos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    myservo.write(ServoPos);              // tell servo to go to ServoPosition in variable 'ServoPos'
-    delay(20);                       // waits 15ms for the servo to reach the ServoPosition
-    }
+  for (ServoPos = 97; ServoPos >= 34; ServoPos -= 1) { // goes from 180 degrees to 0 degrees
+  myservo.write(ServoPos);              // tell servo to go to ServoPosition in variable 'ServoPos'
+  delay(5);                       // waits 15ms for the servo to reach the ServoPosition
+  }
+  //delay(300);
+  for (ServoPos = 34; ServoPos <= 97; ServoPos += 1) { // goes from 0 degrees to 180 degrees
+  // in steps of 1 degree
+  myservo.write(ServoPos);              // tell servo to go to ServoPosition in variable 'ServoPos'
+  delay(20);                       // waits 15ms for the servo to reach the ServoPosition
+  }
 
+  return;
   }
 // Datum und Uhrzeit auf dem LCD-Display ausgeben
   void TimeTabelDatum(){
