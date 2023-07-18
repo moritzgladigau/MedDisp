@@ -74,7 +74,7 @@ int timeslots[4][3] = {
     "manual dispense",
     "Set Date & Time",
     "Clear all",
-    "Set Arlarm"
+    "Set Alarm"
     // and so on...
   };
 //menu Function
@@ -186,21 +186,24 @@ int timeslots[4][3] = {
       }
       lcd.setCursor(0, 1);
       if(NextArlarm == 1){
-          // if(right == 1){if(NextStep < 2){NextStep++;}}
-          // if(left == 1){if(NextStep > 0){NextStep--;}}
-          // Serial.print(NextStep);
-          // if(NextStep == 2){if(right == 1){if(NextArlarm < Numb){NextArlarm++;}}}
-          // if(NextStep == 0){timeslots[0][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[0][0]);} // Stunde auf 12 setzen}
-          // if(NextStep == 1){timeslots[0][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[0][1]);} // Minute auf 34 setzen}
           timeslots[0][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[0][0]);
-          timeslots[0][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[0][1]);
           timeslots[0][2] = 0;  // Sekunde auf 0 setzen (Start der Servo-Bewegung zu jeder vollen Minute)
           lcd.print("Timeslot 1:");
           lcd.print(timeslots[0][0]);
           lcd.print(":");
           lcd.print(timeslots[0][1]);
       }
+      
       if(NextArlarm == 2){
+          timeslots[0][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[0][1]);
+          timeslots[0][2] = 0;  // Sekunde auf 0 setzen (Start der Servo-Bewegung zu jeder vollen Minute)
+          lcd.print("Timeslot 1:");
+          lcd.print(timeslots[0][0]);
+          lcd.print(":");
+          lcd.print(timeslots[0][1]);
+      
+      }
+      if(NextArlarm == 3){
           lcd.print("Timeslot 2:");
       }
     }
@@ -337,8 +340,12 @@ int timeslots[4][3] = {
       int RTCHour = now.hour();
       int RTCMin = now.minute();
       int RTCSec = now.second();
+      Serial.println("RTCMin");
       Serial.println(RTCMin);
       Serial.println(timeslots[0][1]);
+      Serial.println("RTCSec");
+      Serial.println(RTCSec);
+      Serial.println(timeslots[0][2]);
     //Servo
       if(RTCHour == timeslots[0][0] && RTCMin == timeslots[0][1] && RTCSec == timeslots[0][2] && isSet[0] == 1){
           ServoMove();
