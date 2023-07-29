@@ -4,7 +4,7 @@
   #include <LiquidCrystal.h>
   #include <Servo.h>
 
-//Joystick and Button libraries inclusion
+// Joystick and Button libraries inclusion
   #include <ezButton.h>
 
 // I2C library for RTC and RTC library inclusion
@@ -24,7 +24,7 @@
 // Create RTC object
   RTC_DS1307 rtc;
 
-//Global variables
+// Global variables
   // Store Joystick Values
     int xValue = 0; // To store value of the X axis
     int yValue = 0; // To store value of the Y axis
@@ -45,8 +45,7 @@
     int Next = 0;                       // Switch "set date /time"
     int NextArlarm = 0;
     int NextStep = 0;
-
-  int Numb = 1;
+    int Numb = 1;
 
 // Array to track which timeslots are enabled
   int isSet[4] = {0, 0, 0, 0};
@@ -58,7 +57,7 @@
     {0, 0, 0}    // Timeslot4
   };
 
-//Text Icons
+// Text Icons
   // Herz <3
     byte heart[8] = {
     0b00000,
@@ -216,18 +215,14 @@
       Serial.println(RTCSec);
       Serial.println(timeslots[0][2]);
     //Servo
-      if(RTCHour == timeslots[0][0] && RTCMin == timeslots[0][1] && RTCSec == timeslots[0][2] && isSet[0] == 1){
-          ServoMove();
-        }
-        else if(RTCHour == timeslots[1][0] && RTCMin == timeslots[1][1] && RTCSec == timeslots[1][2] && isSet[1] == 1){
-          ServoMove();
-        }
-        else if(RTCHour == timeslots[2][0] && RTCMin == timeslots[2][1] && RTCSec == timeslots[2][2] && isSet[2] == 1){
-          ServoMove();
-        }
-        else if(RTCHour == timeslots[3][0] && RTCMin == timeslots[3][1] && RTCSec == timeslots[3][2] && isSet[3] == 1){
-          ServoMove();
-        }
+      // Check if the current time matches any of the specified timeslots, and if the timeslot is enabled (isSet[x] == 1). If both conditions are met, call the "ServoMove()" function to initiate servo movement.
+      if ((RTCHour == timeslots[0][0] && RTCMin == timeslots[0][1] && RTCSec == timeslots[0][2] && isSet[0] == 1) ||
+          (RTCHour == timeslots[1][0] && RTCMin == timeslots[1][1] && RTCSec == timeslots[1][2] && isSet[1] == 1) ||
+          (RTCHour == timeslots[2][0] && RTCMin == timeslots[2][1] && RTCSec == timeslots[2][2] && isSet[2] == 1) ||
+          (RTCHour == timeslots[3][0] && RTCMin == timeslots[3][1] && RTCSec == timeslots[3][2] && isSet[3] == 1)) {
+        ServoMove(); // Call the function to move the servo.
+      }
+
   }
 
 
