@@ -39,9 +39,9 @@ int minute = 0;   // 0 - 59
 int second = 0;
 
 // Global variables for the menu
-int SetNumber = 1;                  // helper value to display numbers 0-9
-int WorkOnlyOnce = 0;               // Whait for press button OnlyOnce at the Start
-int ButtonIsPressedGoInAndOut = 0;  // Was the Joystick pressed the lassed time
+int SetNumber = 1;                  // Auxiliary value for representing the numbers 0-9
+int WorkOnlyOnce = 0;               // Wait for press button Only Once at the Start
+int ButtonIsPressedGoInAndOut = 0;  // Was the Joystick pressed the last time
 int ServoPos = 0;                   // variable to store the servo ServoPosition
 int Next = 0;                       // Switch "set date /time"
 int NextArlarm = 0;
@@ -61,7 +61,7 @@ int timeslots[4][3] = {
 };
 
 // Text Icons
-// Herz <3
+// Heart <3
 byte heart[8] = {
   0b00000,
   0b00000,
@@ -87,7 +87,7 @@ String MenuItems[] = {
 template< typename T, size_t NumberOfSize >
 size_t MenuItemsSize(T (&)[NumberOfSize]) {
   return NumberOfSize;
-}  //allows to get the size of any array, regardless of its type and size.
+}  // allows to get the size of an array, regardless of its type and size.
 int numberOfMenuItems = MenuItemsSize(MenuItems) - 1;
 int currentMenuItem = 0;
 int previousMenuItem = 1;
@@ -96,7 +96,7 @@ unsigned long previousMillis = millis();
 
 //Setup
 void setup() {
-  Serial.begin(57600);  // comunication between PC and Arduino
+  Serial.begin(57600);  // communication between PC and Arduino
   lcd.begin(16, 2);
   StartMail();
 
@@ -105,19 +105,15 @@ void setup() {
   //RTC
   Wire.begin();
   rtc.begin();
-  //Wire.endTransmission();
+
   button.setDebounceTime(50);  // Set debounce time to 50ms for button to prevent unintended multiple inputs caused by mechanical contacts
-  Serial.print(button.getState());
 }
 //Loop
 void loop() {
-  // button.loop();
-  //RTCWire();
-
   DateTime now = rtc.now();
 
   // Button initialize
-  button.loop();  // // Update button status
+  button.loop();     // Update button status
 
   xValue = analogRead(VRX_PIN);  // read analog X analog values
   yValue = analogRead(VRY_PIN);  // read analog Y analog values
@@ -125,23 +121,18 @@ void loop() {
   // StartButton to continue
   if (WorkOnlyOnce == 0) {
     //Control Suport Serial Monitor
-    // Serial.println("If WorkOnlyOnce: 0 -> Wait to press the JoyStick");
-    // Serial.println("            or: 1 -> The button was pressed code wont work again");
-    // Serial.print("WorkOnlyOnce:");
-    // Serial.println(WorkOnlyOnce);
-    SerialMonitor("Hallo");
+    SerialMonitor("WorkOnlyOnceOne");
     while (digitalRead(7) != LOW);
     {
       StartButton();
       WorkOnlyOnce = 1;
       //Control Suport Serial Monitor
-      Serial.print("WorkOnlyOnce:");
-      Serial.println(WorkOnlyOnce);
-      Serial.println(button.getState());
+      SerialMonitor("WorkOnlyOnceTwo");
+    
     }
   }
   // Joystick movement
-  // Joystick pressed to go futher yes or no
+  // Joystick pressed to go further yes or no
   if (button.getState() != HIGH && button_flag == 0) {
     button_flag = 1;
     Serial.println("If ButtonIsPressedGoInAndOut New is 0 you can use yValue if 1 xValue:");
@@ -172,9 +163,9 @@ void loop() {
       menuFunctions(currentMenuItem + 1, 0, 0, 0, 0);
     }
   }
-  //controle menu wird brauch ich nur im menu wechsel
-  // instansiere kontrollwert=1 wenn joystick gedruekt
-  // und dann wieder auf 0 setzen wenn ein weiteres mal getruken wird
+  // Menu navigation: 
+  // - If ButtonIsPressedGoInAndOut is 0, joystick Y-axis values determine menu item increments/decrements.
+  // - When ButtonIsPressedGoInAndOut is 1, joystick Y-axis value triggers menu function calls for upward movement.
   if (ButtonIsPressedGoInAndOut == 0) {
     if (yValue < 50 && button_flag == 0) {
       ++currentMenuItem;
@@ -225,7 +216,11 @@ void loop() {
 
   //Servo
   // Check if the current time matches any of the specified timeslots, and if the timeslot is enabled (isSet[x] == 1). If both conditions are met, call the "ServoMove()" function to initiate servo movement.
-  if ((RTCHour == timeslots[0][0] && RTCMin == timeslots[0][1] && RTCSec == timeslots[0][2] && isSet[0] == 1) || (RTCHour == timeslots[1][0] && RTCMin == timeslots[1][1] && RTCSec == timeslots[1][2] && isSet[1] == 1) || (RTCHour == timeslots[2][0] && RTCMin == timeslots[2][1] && RTCSec == timeslots[2][2] && isSet[2] == 1) || (RTCHour == timeslots[3][0] && RTCMin == timeslots[3][1] && RTCSec == timeslots[3][2] && isSet[3] == 1)) {
+  for (int i = 0; i < 4; i++) {
+  if (RTCHour == timeslots[i][0] && RTCMin == timeslots[i][1] && RTCSec == timeslots[i][2] && isSet[i] == 1) {
     ServoMove();  // Call the function to move the servo.
+    break; // Exit the loop once the condition is met to avoid unnecessary checks.
   }
+}
+
 }

@@ -2,20 +2,16 @@
   void TimeTabelDatum(){
     //lcd.setCursor(0, 0);
     DateTime now = rtc.now();
-    lcd.print("Datum: ");
-    lcd.print(now.day(), DEC);
-    lcd.print('/');
-    lcd.print(now.month(), DEC);
-    lcd.print('/');
-    lcd.print(now.year(), DEC);
+    lcd.print("Datum:");
+    char lcdline[10];
+    sprintf(lcdline,"%02d/%02d/%04d",now.day(),now.month(),now.year());
+    lcd.print(lcdline);
   }
   void TimeTabeUhrzeit(){
     DateTime now = rtc.now();
     lcd.setCursor(0, 1);
     lcd.print("Uhrzeit:");
-    lcd.print(now.hour(), DEC);
-    lcd.print(':');
-    lcd.print(now.minute(), DEC);
-    lcd.print(':');
-    lcd.print(now.second(), DEC);
+    char lcdline[10];
+    sprintf(lcdline,"%02d:%02d:%02d",now.hour(),now.minute(),now.second());
+    lcd.print(lcdline);
   }
