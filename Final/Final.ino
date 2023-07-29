@@ -1,60 +1,62 @@
 
 
-//LCD einfuehrung
- #include <LiquidCrystal.h>
-
- const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
- LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
-
-//Servo einfuegen
+// LCD and Servo libraries inclusion
+  #include <LiquidCrystal.h>
   #include <Servo.h>
-  Servo myservo;  // create servo object to control a servo
-//Joystick einweisung
+
+//Joystick and Button libraries inclusion
   #include <ezButton.h>
 
-  #define VRX_PIN  A0 // Arduino pin connected to VRX pin
-  #define VRY_PIN  A1 // Arduino pin connected to VRY pin
-  #define SW_PIN   7  // Arduino pin connected to SW  pin
-
-  ezButton button(SW_PIN);
-
-  int xValue = 0; // To store value of the X axis
-  int yValue = 0; // To store value of the Y axis
-
-//RTC einfuegen 
+// I2C library for RTC and RTC library inclusion
   #include <SoftWire.h>
   #include <RTClib.h>
 
+// Create LCD object
+  const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+  LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+// Create Servo object
+  Servo myservo;
+// Define Joystick pins
+  #define VRX_PIN  A0 // Arduino pin connected to VRX pin
+  #define VRY_PIN  A1 // Arduino pin connected to VRY pin
+  #define SW_PIN   7  // Arduino pin connected to SW  pin
+  ezButton button(SW_PIN);
+// Create RTC object
   RTC_DS1307 rtc;
-  //DateTime now = rtc.now(); 
 
-int SetNumber=1; // helper value to display numbers 0-9
-int WorkOnlyOnce = 0; // Whait for press button OnlyOnce at the Start
-int ButtonIsPressedGoInAndOut = 0; // Was the Joystick pressed the lassed time 
-int ServoPos = 0;    // variable to store the servo ServoPosition
-int Next = 0; // Switch "set date /time"
-int NextArlarm = 0;
-int NextStep = 0;
+//Global variables
+  // Store Joystick Values
+    int xValue = 0; // To store value of the X axis
+    int yValue = 0; // To store value of the Y axis
 
-int year = 2023; ////2023 - 2099
-int month = 1; // 1 - 12
-int day = 1; // 1 - 31
-int hour = 0; // 0 - 23
-int minute = 0; // 0 - 59
-int second = 0;
+  // Global variables for time settings
+    int year = 2023;  //2023 - 2099
+    int month = 1;    // 1 - 12
+    int day = 1;      // 1 - 31
+    int hour = 0;     // 0 - 23
+    int minute = 0;   // 0 - 59
+    int second = 0;
 
-int Numb = 1;
+  // Global variables for the menu
+    int SetNumber=1;                    // helper value to display numbers 0-9
+    int WorkOnlyOnce = 0;               // Whait for press button OnlyOnce at the Start
+    int ButtonIsPressedGoInAndOut = 0;  // Was the Joystick pressed the lassed time 
+    int ServoPos = 0;                   // variable to store the servo ServoPosition
+    int Next = 0;                       // Switch "set date /time"
+    int NextArlarm = 0;
+    int NextStep = 0;
 
+  int Numb = 1;
 
-  //Wich timeslots are used
-int isSet[4] = {0, 0, 0, 0};
-// Timeslots: [Stunde, Minute, Sekunde]
-int timeslots[4][3] = {
-  {5, 27, 0}, // Timeslot1
-  {0, 0, 0},   // Timeslot2
-  {0, 0, 0},   // Timeslot3
-  {0, 0, 0}    // Timeslot4
-};
+// Array to track which timeslots are enabled
+  int isSet[4] = {0, 0, 0, 0};
+// Array for timeslots: [Hour, Minute, Second]
+  int timeslots[4][3] = {
+    {5, 27, 0},  // Timeslot1
+    {0, 0, 0},   // Timeslot2
+    {0, 0, 0},   // Timeslot3
+    {0, 0, 0}    // Timeslot4
+  };
 
 //Text Icons
   // Herz <3
@@ -68,148 +70,15 @@ int timeslots[4][3] = {
     0b00100,
     0b00000
     };
-//Menu einweisung
+// Menu texts
   String MenuItems[] = {  // Your menu items 
     "Show Date & Time",
     "manual dispense",
     "Set Date & Time",
     "Clear all",
     "Set Alarm"
-    // and so on...
+    // additional menu items...
   };
-//menu Function
- void menuFunctions(int menu, byte right, byte left, byte Up, byte Down){  // Your menu functions
-  if(menu == 1){ // example function for 1. menu item
-    if(ButtonIsPressedGoInAndOut == 1){
-      lcd.setCursor(0, 0);
-      TimeTabelDatum();
-      TimeTabeUhrzeit();
-    }
-  }
-  if(menu == 2){ // example function for 2. menu item
-    if(ButtonIsPressedGoInAndOut == 1){
-      //RTCWire();
-      ServoMove();
-    }
-  }
-  if(menu == 3){
-    if(ButtonIsPressedGoInAndOut == 1){
-      DateTime now = rtc.now(); 
-
-      int second = now.second(); // Die Sekunde bleibt unverändert
-      //lcd.clear();
-      if(right == 1){if(Next < 5){Next++;}}
-      if(left == 1){if(Next > 0){Next--;}}
-
-      //lcd.setCursor(0, 0);
-      //lcd.print("Set Date:");
-      lcd.cursor();
-      if(Next == 0){
-        year = NumberCounterNew(Up, Down, 2099, 2022, year);
-
-        lcd.setCursor(0, 1);
-        lcd.print(year);
-      }
-      else if(Next == 1){
-        month = NumberCounterNew(Up, Down, 11, 2, month);
-
-        lcd.setCursor(0, 1);
-        lcd.print(year);
-        lcd.print("/");
-        lcd.print(month);
-
-      }
-      else if(Next == 2){
-        day = NumberCounterNew(Up, Down, 30, 2, day);
-
-        lcd.setCursor(0, 1);
-        lcd.print(year);
-        lcd.print("/");
-        lcd.print(month);
-        lcd.print("/");
-        lcd.print(day);
-      }
-      else if(Next == 3){
-        hour = NumberCounterNew(Up, Down, 22, 1, hour);
-
-        lcd.setCursor(11, 1);
-        lcd.print(hour);
-      }
-      else if(Next == 4){
-        minute = NumberCounterNew(Up, Down, 58, 1, minute);
-
-        lcd.setCursor(11, 1);
-        lcd.print(hour);
-        lcd.print(":");
-        lcd.print(minute);
-      }
-      else if(Next == 5){
-        lcd.noCursor();
-        rtc.adjust(DateTime(year, month, day, hour, minute, second));
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Date & Time");
-        lcd.setCursor(0, 1);
-        lcd.print("All Set");
-      }
-    }
-    
-  }
-  if(menu == 4){
-    if(ButtonIsPressedGoInAndOut == 1){
-      isSet[0] = 0;
-      isSet[1] = 0;
-      isSet[2] = 0;
-      isSet[3] = 0;
-    }
-  }
-  if(menu == 5){
-    
-    if(ButtonIsPressedGoInAndOut == 1){
-      
-      if(right == 1){if(NextArlarm < Numb){NextArlarm++;}}
-      if(left == 1){if(NextArlarm > 0){NextArlarm--;}}
-      
-      if(NextArlarm == 0){
-        lcd.setCursor(0, 1);
-        lcd.print("Timeslots: ");
-        Numb = NumberCounterNew(Up, Down, 3, 2, Numb);
-        lcd.print(Numb);
-        if(Numb >= 1){isSet[0]=1;}else{isSet[0]=0;}
-        //Serial.print("isSet 1:"); Serial.println(isSet[0]);
-        if(Numb >= 2){isSet[1]=1;}else{isSet[1]=0;}
-        //Serial.print("isSet 2:"); Serial.println(isSet[1]);
-        if(Numb >= 3){isSet[2]=1;}else{isSet[2]=0;}
-        //Serial.print("isSet 3:"); Serial.println(isSet[2]);
-        if(Numb >= 4){isSet[3]=1;}else{isSet[3]=0;}
-        //Serial.print("isSet 4:"); Serial.println(isSet[3]);
-      }
-      lcd.setCursor(0, 1);
-      if(NextArlarm == 1){
-          timeslots[0][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[0][0]);
-          timeslots[0][2] = 0;  // Sekunde auf 0 setzen (Start der Servo-Bewegung zu jeder vollen Minute)
-          lcd.print("Timeslot 1:");
-          lcd.print(timeslots[0][0]);
-          lcd.print(":");
-          lcd.print(timeslots[0][1]);
-      }
-      
-      if(NextArlarm == 2){
-          timeslots[0][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[0][1]);
-          timeslots[0][2] = 0;  // Sekunde auf 0 setzen (Start der Servo-Bewegung zu jeder vollen Minute)
-          lcd.print("Timeslot 1:");
-          lcd.print(timeslots[0][0]);
-          lcd.print(":");
-          lcd.print(timeslots[0][1]);
-      
-      }
-      if(NextArlarm == 3){
-          lcd.print("Timeslot 2:");
-      }
-    }
-  }
-   // and so on... 
- }
 
 /***  do not modify  ***********************************************/
  template< typename T, size_t NumberOfSize > 
@@ -361,85 +230,8 @@ int timeslots[4][3] = {
         }
   }
 
-//currentMeueItem
-  void CurrentMenueItem(){
-    lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Menu Item:");
-        lcd.setCursor(0, 1);
-        lcd.print(MenuItems [currentMenuItem]);
-  }
-  
-// Start Mail
-  void StartMail(){
-    lcd.createChar(0, heart);   // create a new character
-    lcd.setCursor(0, 0);
-    lcd.setCursor(3,0);
-    lcd.write(byte(0)); // when calling lcd.write() '0' must be cast as a byte
-    lcd.print("MedDisp");
-    lcd.write(byte(0)); // when calling lcd.write() '0' must be cast as a byte
-  }
- // Press buton to continue
-    void StartButton(){
-      lcd.setCursor(6,1);
-      lcd.print("Start");
-      // fake loading process
-        for(int Laden=0;Laden<=100; Laden++){
-          lcd.setCursor(15, 1);
-          lcd.print("%");
-          if(Laden<10){
-            lcd.setCursor(14, 1);
-          }else if(Laden<100){
-            lcd.setCursor(13, 1);
-          }
-          lcd.print(Laden);
-          delay(10); 
-        }
-    lcd.clear();
-    }
-//Value on display numbers 0-9 Count
-  int NumberCounterNew(byte Up, byte Down, int Max, int Min, int Start){
-    if(Up == 1 && Start <= Max){
-      return Start+1;
-    }
-    if(Down == 1 && Start >= Min){
-      return Start-1;
-    }
-    return Start;
-  }
-//Servo Move
-  void ServoMove(){
-  for (ServoPos = 97; ServoPos >= 34; ServoPos -= 1) { // goes from 180 degrees to 0 degrees
-  myservo.write(ServoPos);              // tell servo to go to ServoPosition in variable 'ServoPos'
-  delay(5);                       // waits 15ms for the servo to reach the ServoPosition
-  }
-  //delay(300);
-  for (ServoPos = 34; ServoPos <= 97; ServoPos += 1) { // goes from 0 degrees to 180 degrees
-  // in steps of 1 degree
-  myservo.write(ServoPos);              // tell servo to go to ServoPosition in variable 'ServoPos'
-  delay(20);                       // waits 15ms for the servo to reach the ServoPosition
-  }
 
-  return;
-  }
-// Datum und Uhrzeit auf dem LCD-Display ausgeben
-  void TimeTabelDatum(){
-    //lcd.setCursor(0, 0);
-    DateTime now = rtc.now();
-    lcd.print("Datum: ");
-    lcd.print(now.day(), DEC);
-    lcd.print('/');
-    lcd.print(now.month(), DEC);
-    lcd.print('/');
-    lcd.print(now.year(), DEC);
-  }
-  void TimeTabeUhrzeit(){
-    DateTime now = rtc.now();
-    lcd.setCursor(0, 1);
-    lcd.print("Uhrzeit:");
-    lcd.print(now.hour(), DEC);
-    lcd.print(':');
-    lcd.print(now.minute(), DEC);
-    lcd.print(':');
-    lcd.print(now.second(), DEC);
-  }
+
+
+
+
