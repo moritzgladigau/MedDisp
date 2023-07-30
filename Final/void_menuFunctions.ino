@@ -28,9 +28,6 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
         if (Next > 0) { Next--; }
       }
 
-      //lcd.setCursor(0, 0);
-      //lcd.print("Set Date:");
-      lcd.cursor();
       char lcdline[17];  // Array to store the formatted LCD line
 
       if (Next == 0) {
@@ -44,17 +41,22 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
       } else if (Next == 4) {
         minute = NumberCounterNew(Up, Down, 58, 1, minute);
       } else if (Next == 5) {
-        lcd.noCursor();
         rtc.adjust(DateTime(year, month, day, hour, minute, second));
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Date & Time");
         lcd.setCursor(0, 1);
         lcd.print("All Set");
+        delay(700);
+        ButtonIsPressedGoInAndOut = 0;
+        CurrentMenueItem();
+        Next = 0;
       }
+      if(Next != 5 && ButtonIsPressedGoInAndOut == 1){
       sprintf(lcdline, "%04d/%02d/%02d %02d:%02d", year, month, day, hour, minute);
       lcd.setCursor(0, 1);
       lcd.print(lcdline);
+      }
     }
   }
   if (menu == 4) {

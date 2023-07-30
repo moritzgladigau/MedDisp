@@ -101,7 +101,7 @@ void setup() {
   StartMail();
 
   myservo.attach(9);  // attaches the servo on pin 9 to the servo object
-  
+
   //RTC
   Wire.begin();
   rtc.begin();
@@ -113,68 +113,67 @@ void loop() {
   DateTime now = rtc.now();
 
   // Button initialize
-  button.loop();     // Update button status
+  button.loop();  // Update button status
 
   xValue = analogRead(VRX_PIN);  // read analog X analog values
   yValue = analogRead(VRY_PIN);  // read analog Y analog values
-  
+
   // StartButton to continue
   if (WorkOnlyOnce == 0) {
     //Control Suport Serial Monitor
     SerialMonitor("WorkOnlyOnceOne");
-    while (digitalRead(7) != LOW);
+    while (digitalRead(7) != LOW)
+      ;
     {
       StartButton();
       WorkOnlyOnce = 1;
       //Control Suport Serial Monitor
       SerialMonitor("WorkOnlyOnceTwo");
-    
     }
   }
   // Joystick movement
-  // Joystick pressed to go further yes or no
+  // Check if the joystick button is pressed to navigate further or not
   if (button.getState() != HIGH && button_flag == 0) {
     button_flag = 1;
-    Serial.println("If ButtonIsPressedGoInAndOut New is 0 you can use yValue if 1 xValue:");
-    Serial.print("ButtonIsPressedGoInAndOut Old: ");
-    Serial.println(ButtonIsPressedGoInAndOut);
-    if (ButtonIsPressedGoInAndOut == 0) {
+    SerialMonitor("GoInMenu");
+    if (ButtonIsPressedGoInAndOut == 0) {  // If entering the menu
       ButtonIsPressedGoInAndOut = 1;
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print(MenuItems[currentMenuItem]);
-    } else if (ButtonIsPressedGoInAndOut == 1) {
+      lcd.print(MenuItems[currentMenuItem]);      // Display the current menu item
+    } else if (ButtonIsPressedGoInAndOut == 1) {  // If exiting the menu
       ButtonIsPressedGoInAndOut = 0;
-      CurrentMenueItem();
+      CurrentMenueItem();  // Show the main menu again
     }
-    Serial.print("ButtonIsPressedGoInAndOut New: ");
-    Serial.println(ButtonIsPressedGoInAndOut);
+    SerialMonitor("GoOutMenu");
   }
-  if (ButtonIsPressedGoInAndOut == 1) {
-    if (xValue > 900 && button_flag == 0) {
-      menuFunctions(currentMenuItem + 1, 0, 1, 0, 0);
+
+  if (ButtonIsPressedGoInAndOut == 1) {                // If inside the menu
+    if (xValue > 900 && button_flag == 0) {            // Check joystick movement along the x-axis
+      menuFunctions(currentMenuItem + 1, 0, 1, 0, 0);  // Move to the next menu item
       button_flag = 1;
       previousMillis = millis();
-    } else if (xValue < 50 && button_flag == 0) {
+    } else if (xValue < 50 && button_flag == 0) {  // Move to the previous menu item
       menuFunctions(currentMenuItem + 1, 1, 0, 0, 0);
       button_flag = 1;
       previousMillis = millis();
     } else {
-      menuFunctions(currentMenuItem + 1, 0, 0, 0, 0);
+      menuFunctions(currentMenuItem + 1, 0, 0, 0, 0);  // Stay on the current menu item
     }
   }
-  // Menu navigation: 
+  
+  // Menu navigation:
   // - If ButtonIsPressedGoInAndOut is 0, joystick Y-axis values determine menu item increments/decrements.
   // - When ButtonIsPressedGoInAndOut is 1, joystick Y-axis value triggers menu function calls for upward movement.
   if (ButtonIsPressedGoInAndOut == 0) {
-    if (yValue < 50 && button_flag == 0) {
+    if (yValue < 50 && button_flag == 0) {  // Check joystick Y-axis for upward movement
       ++currentMenuItem;
       if (currentMenuItem > numberOfMenuItems) {
         currentMenuItem = numberOfMenuItems;
       }
       button_flag = 1;
       previousMillis = millis();
-    } else if (yValue > 900 && button_flag == 0) {
+    } else if (yValue > 900 && button_flag == 0) {  // Check joystick Y-axis for downward movement
       currentMenuItem--;
       if (currentMenuItem < 0) {
         currentMenuItem = 0;
@@ -183,17 +182,18 @@ void loop() {
       previousMillis = millis();
     }
   } else {
-    if (yValue < 50 && button_flag == 0) {
-      menuFunctions(currentMenuItem + 1, 0, 0, 1, 0);  //up
+    if (yValue < 50 && button_flag == 0) {             // Check joystick Y-axis for upward movement
+      menuFunctions(currentMenuItem + 1, 0, 0, 1, 0);  // Move upward
       button_flag = 1;
       previousMillis = millis();
     }
-    if (yValue > 900 && button_flag == 0) {
-      menuFunctions(currentMenuItem + 1, 0, 0, 0, 1);  //down
+    if (yValue > 900 && button_flag == 0) {            // Check joystick Y-axis for downward movement
+      menuFunctions(currentMenuItem + 1, 0, 0, 0, 1);  // Move downward
       button_flag = 1;
       previousMillis = millis();
     }
   }
+
   // This condition checks whether the selected menu item has changed.
   if (currentMenuItem != previousMenuItem) {
     lcd.clear();
@@ -217,10 +217,9 @@ void loop() {
   //Servo
   // Check if the current time matches any of the specified timeslots, and if the timeslot is enabled (isSet[x] == 1). If both conditions are met, call the "ServoMove()" function to initiate servo movement.
   for (int i = 0; i < 4; i++) {
-  if (RTCHour == timeslots[i][0] && RTCMin == timeslots[i][1] && RTCSec == timeslots[i][2] && isSet[i] == 1) {
-    ServoMove();  // Call the function to move the servo.
-    break; // Exit the loop once the condition is met to avoid unnecessary checks.
+    if (RTCHour == timeslots[i][0] && RTCMin == timeslots[i][1] && RTCSec == timeslots[i][2] && isSet[i] == 1) {
+      ServoMove();  // Call the function to move the servo.
+      break;        // Exit the loop once the condition is met to avoid unnecessary checks.
+    }
   }
-}
-
 }
