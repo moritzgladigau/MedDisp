@@ -54,10 +54,10 @@ int isSet[4] = { 0, 0, 0, 0 };
 
 // Array for timeslots: [Hour, Minute, Second]
 int timeslots[4][3] = {
-  { 5, 27, 0 },  // Timeslot1
-  { 0, 0, 0 },   // Timeslot2
-  { 0, 0, 0 },   // Timeslot3
-  { 0, 0, 0 }    // Timeslot4
+  { 0, 0, 0 },  // Timeslot1
+  { 0, 0, 0 },  // Timeslot2
+  { 0, 0, 0 },  // Timeslot3
+  { 0, 0, 0 }   // Timeslot4
 };
 
 // Text Icons
@@ -76,8 +76,8 @@ byte heart[8] = {
 String MenuItems[] = {
   // Your menu items
   "Show Date & Time",
-  "manual dispense",
   "Set Date & Time",
+  "manual dispense",
   "Clear all",
   "Set Alarm"
   // additional menu items...
@@ -161,7 +161,7 @@ void loop() {
       menuFunctions(currentMenuItem + 1, 0, 0, 0, 0);  // Stay on the current menu item
     }
   }
-  
+
   // Menu navigation:
   // - If ButtonIsPressedGoInAndOut is 0, joystick Y-axis values determine menu item increments/decrements.
   // - When ButtonIsPressedGoInAndOut is 1, joystick Y-axis value triggers menu function calls for upward movement.

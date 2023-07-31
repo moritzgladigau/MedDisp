@@ -3,19 +3,19 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
   // The actions for each menu item are implemented here, based on the states of right, left, up, and down
   // which are captured from joystick movements.
 
-  if (menu == 1) {  // Menue.1 shows the date and time on the lcd
+  if (menu == 1) {  // "Show Date & Time"
     if (ButtonIsPressedGoInAndOut == 1) {
       lcd.setCursor(0, 0);
       TimeTabelDatum();
       TimeTabeUhrzeit();
     }
   }
-  if (menu == 2) {  // example function for 2. menu item
+  if (menu == 3) {  // "manual dispense"
     if (ButtonIsPressedGoInAndOut == 1) {
       ServoMove();
     }
   }
-  if (menu == 3) {
+  if (menu == 2) {  // "Set Date & Time"
     if (ButtonIsPressedGoInAndOut == 1) {
       DateTime now = rtc.now();
 
@@ -52,14 +52,14 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
         CurrentMenueItem();
         Next = 0;
       }
-      if(Next != 5 && ButtonIsPressedGoInAndOut == 1){
-      sprintf(lcdline, "%04d/%02d/%02d %02d:%02d", year, month, day, hour, minute);
-      lcd.setCursor(0, 1);
-      lcd.print(lcdline);
+      if (Next != 5 && ButtonIsPressedGoInAndOut == 1) {
+        sprintf(lcdline, "%04d/%02d/%02d %02d:%02d", year, month, day, hour, minute);
+        lcd.setCursor(0, 1);
+        lcd.print(lcdline);
       }
     }
   }
-  if (menu == 4) {
+  if (menu == 4) {  // "Clear all"
     if (ButtonIsPressedGoInAndOut == 1) {
       isSet[0] = 0;
       isSet[1] = 0;
@@ -67,67 +67,86 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
       isSet[3] = 0;
     }
   }
-  if (menu == 5) {
+  if (menu == 5) {  // "Set Alarm"
 
     if (ButtonIsPressedGoInAndOut == 1) {
 
       if (right == 1) {
-        if (NextArlarm < Numb) { NextArlarm++; }
+        if (NextArlarm < Numb * 2) { NextArlarm++; }
       }
       if (left == 1) {
         if (NextArlarm > 0) { NextArlarm--; }
       }
 
-      if (NextArlarm == 0) {
-        lcd.setCursor(0, 1);
-        lcd.print("Timeslots: ");
-        Numb = NumberCounterNew(Up, Down, 3, 2, Numb);
-        lcd.print(Numb);
-        if (Numb >= 1) {
-          isSet[0] = 1;
-        } else {
-          isSet[0] = 0;
-        }
-        //Serial.print("isSet 1:"); Serial.println(isSet[0]);
-        if (Numb >= 2) {
-          isSet[1] = 1;
-        } else {
-          isSet[1] = 0;
-        }
-        //Serial.print("isSet 2:"); Serial.println(isSet[1]);
-        if (Numb >= 3) {
-          isSet[2] = 1;
-        } else {
-          isSet[2] = 0;
-        }
-        //Serial.print("isSet 3:"); Serial.println(isSet[2]);
-        if (Numb >= 4) {
-          isSet[3] = 1;
-        } else {
-          isSet[3] = 0;
-        }
-        //Serial.print("isSet 4:"); Serial.println(isSet[3]);
-      }
       lcd.setCursor(0, 1);
-      if (NextArlarm == 1) {
-        timeslots[0][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[0][0]);
-        timeslots[0][2] = 0;  // Sekunde auf 0 setzen (Start der Servo-Bewegung zu jeder vollen Minute)
-        lcd.print("Timeslot 1:");
-        lcd.print(timeslots[0][0]);
-        lcd.print(":");
-        lcd.print(timeslots[0][1]);
-      }
+      // Common functionality for all cases
+      char lcdline[17];  // Array to store the formatted LCD line
 
-      if (NextArlarm == 2) {
-        timeslots[0][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[0][1]);
-        timeslots[0][2] = 0;  // Sekunde auf 0 setzen (Start der Servo-Bewegung zu jeder vollen Minute)
-        lcd.print("Timeslot 1:");
-        lcd.print(timeslots[0][0]);
-        lcd.print(":");
-        lcd.print(timeslots[0][1]);
-      }
-      if (NextArlarm == 3) {
-        lcd.print("Timeslot 2:");
+      switch (NextArlarm) {
+        case 1:  // Timeslot-1 hour
+          timeslots[0][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[0][0]);
+          sprintf(lcdline, "Timeslot-1 %02d:%02d", timeslots[0][0], timeslots[0][1]);
+          lcd.print(lcdline);
+          break;
+
+        case 2:  // Timeslot-1 minute
+          timeslots[0][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[0][1]);
+          sprintf(lcdline, "Timeslot-1 %02d:%02d", timeslots[0][0], timeslots[0][1]);
+          lcd.print(lcdline);
+          break;
+
+        case 3:  // Timeslot-2 hour
+          timeslots[1][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[1][0]);
+          sprintf(lcdline, "Timeslot-2 %02d:%02d", timeslots[1][0], timeslots[1][1]);
+          lcd.print(lcdline);
+          break;
+
+        case 4:  // Timeslot-2 minute
+          timeslots[1][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[1][1]);
+          sprintf(lcdline, "Timeslot-2 %02d:%02d", timeslots[1][0], timeslots[1][1]);
+          lcd.print(lcdline);
+          break;
+
+        case 5:  // Timeslot-3 hour
+          timeslots[2][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[2][0]);
+          sprintf(lcdline, "Timeslot-3 %02d:%02d", timeslots[2][0], timeslots[2][1]);
+          lcd.print(lcdline);
+          break;
+
+        case 6:  // Timeslot-3 minute
+          timeslots[2][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[2][1]);
+          sprintf(lcdline, "Timeslot-3 %02d:%02d", timeslots[2][0], timeslots[2][1]);
+          lcd.print(lcdline);
+          break;
+
+        case 7:  // Timeslot-4 hour
+          timeslots[3][0] = NumberCounterNew(Up, Down, 22, 1, timeslots[3][0]);
+          sprintf(lcdline, "Timeslot-4 %02d:%02d", timeslots[3][0], timeslots[3][1]);
+          lcd.print(lcdline);
+          break;
+
+        case 8:  // Timeslot-4 minute
+          timeslots[3][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[3][1]);
+          sprintf(lcdline, "Timeslot-4 %02d:%02d", timeslots[3][0], timeslots[3][1]);
+          lcd.print(lcdline);
+          break;
+
+          // Add more cases as needed
+
+        default:
+          // Handle the default case, if required
+          lcd.setCursor(0, 1);
+          lcd.print("Timeslots: ");
+          Numb = NumberCounterNew(Up, Down, 3, 2, Numb);
+          lcd.print(Numb);
+          lcd.print("       ");
+          for (int i = 0; i < 4; i++) {
+            isSet[i] = (Numb >= i + 1) ? 1 : 0;
+            // Serial.print("isSet "); Serial.print(i); Serial.print(":"); Serial.println(isSet[i]);
+            // Serial.println("-------------------------------------------------------------------");
+          }
+
+          break;
       }
     }
   }
