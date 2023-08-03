@@ -66,6 +66,8 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
         timeslots[i][1] = 0;
         isSet[i] = 0;
       }
+      NextArlarm = 0;
+      Numb = 1;
       lcd.setCursor(0, 1);
       lcd.print("All Timeslots cleared");
       delay(800);
