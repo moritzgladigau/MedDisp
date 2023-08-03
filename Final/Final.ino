@@ -47,6 +47,7 @@ int Next = 0;                       // Switch "set date /time"
 int NextArlarm = 0;
 int NextStep = 0;
 int Numb = 1;
+int num[4] = { 0 };
 
 // Timeslots
 // Array to track which timeslots are enabled

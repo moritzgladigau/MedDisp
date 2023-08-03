@@ -12,7 +12,52 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
   }
   if (menu == 3) {  // "manual dispense"
     if (ButtonIsPressedGoInAndOut == 1) {
-      ServoMove();
+      int Password = 2023;
+
+      if (right == 1) {
+        if (NextStep < 4) { NextStep++; }
+      }
+      if (left == 1) {
+        if (NextStep > 0) { NextStep--; }
+      }
+
+
+      for (int i = 0; i < 4; i++) {
+        if (NextStep == i) {
+          num[i] = NumberCounterNew(Up, Down, 8, 1, num[i]);
+          lcd.setCursor(i, 1);
+          lcd.print(num[i]);
+          if (i > 0) {
+            lcd.setCursor(i - 1, 1);
+            lcd.print("*");
+          } 
+          if (i < 3) {
+            lcd.setCursor(i + 1, 1);
+            lcd.print("*");
+          }
+          break;  // Aus der Schleife ausbrechen, sobald die entsprechende Ziffer aktualisiert wurde
+        } else if (NextStep == 4) {
+          lcd.setCursor(6, 1);
+          lcd.print("Check");
+          int enteredPassword = num[0] * 1000 + num[1] * 100 + num[2] * 10 + num[3];
+          delay(500);
+          if (enteredPassword == Password) {
+            ServoMove();
+            ButtonIsPressedGoInAndOut = 0;
+            CurrentMenueItem();
+            NextStep = 0;
+            for (int i = 0; i < 4; i++){
+              num[i] = 0;
+            }
+          } else {
+            lcd.setCursor(6, 1);
+            lcd.print("False");
+            NextStep = 0;
+          }
+        }
+      }
+
+      //int enteredPassword = num[0] * 1000 + num[1] * 100 + num[2] * 10 + num[3];
     }
   }
   if (menu == 2) {  // "Set Date & Time"
