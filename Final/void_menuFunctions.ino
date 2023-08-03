@@ -61,10 +61,18 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
   }
   if (menu == 4) {  // "Clear all"
     if (ButtonIsPressedGoInAndOut == 1) {
-      isSet[0] = 0;
-      isSet[1] = 0;
-      isSet[2] = 0;
-      isSet[3] = 0;
+      for (int i = 0; i < 4; i++) {
+        timeslots[i][0] = 0;
+        timeslots[i][1] = 0;
+        isSet[i] = 0;
+      }
+      lcd.setCursor(0, 1);
+      lcd.print("All Timeslots cleared");
+      delay(800);
+      for (int i = 0; i < 8; i++) {
+        lcd.scrollDisplayLeft();
+        delay(500);
+      }
     }
   }
   if (menu == 5) {  // "Set Alarm"
