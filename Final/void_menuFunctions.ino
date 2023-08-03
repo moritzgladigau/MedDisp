@@ -90,7 +90,7 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
           break;
 
         case 2:  // Timeslot-1 minute
-          timeslots[0][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[0][1]);
+          timeslots[0][1] = NumberCounterNew(Up, Down, 58, 1, timeslots[0][1]);
           sprintf(lcdline, "Timeslot-1 %02d:%02d", timeslots[0][0], timeslots[0][1]);
           lcd.print(lcdline);
           break;
@@ -102,7 +102,7 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
           break;
 
         case 4:  // Timeslot-2 minute
-          timeslots[1][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[1][1]);
+          timeslots[1][1] = NumberCounterNew(Up, Down, 58, 1, timeslots[1][1]);
           sprintf(lcdline, "Timeslot-2 %02d:%02d", timeslots[1][0], timeslots[1][1]);
           lcd.print(lcdline);
           break;
@@ -114,7 +114,7 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
           break;
 
         case 6:  // Timeslot-3 minute
-          timeslots[2][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[2][1]);
+          timeslots[2][1] = NumberCounterNew(Up, Down, 58, 1, timeslots[2][1]);
           sprintf(lcdline, "Timeslot-3 %02d:%02d", timeslots[2][0], timeslots[2][1]);
           lcd.print(lcdline);
           break;
@@ -126,7 +126,7 @@ void menuFunctions(int menu, byte right, byte left, byte Up, byte Down) {  // Yo
           break;
 
         case 8:  // Timeslot-4 minute
-          timeslots[3][1] = NumberCounterNew(Up, Down, 58, 2, timeslots[3][1]);
+          timeslots[3][1] = NumberCounterNew(Up, Down, 58, 1, timeslots[3][1]);
           sprintf(lcdline, "Timeslot-4 %02d:%02d", timeslots[3][0], timeslots[3][1]);
           lcd.print(lcdline);
           break;
